@@ -1,6 +1,6 @@
 // parser.js
 
-function parseInput(input) {
+function parseInput(input, version = 'v24') {
     input = input.trim();
     if (input.startsWith('{')) {
         try {
@@ -9,10 +9,10 @@ function parseInput(input) {
             throw new Error("Invalid JSON input: " + e.message);
         }
     }
-    return parseInfoFlat(input);
+    return parseInfoFlat(input, version);
 }
 
-function parseInfoFlat(input) {
+function parseInfoFlat(input, version = 'v24') {
     const lines = input.split('\n');
     const result = { acl: { 'cpm-filter': {} } };
     
@@ -49,14 +49,30 @@ function parseInfoFlat(input) {
             continue;
         }
 
-        if (line.startsWith('set / acl cpm-filter ')) {
-            const parts = line.replace('set / acl cpm-filter ', '').split(' ');
+        let filterType = null;
+        let isMatch = false;
+        let parts = [];
+        
+        if (version === 'v23' && line.startsWith('set / acl cpm-filter ')) {
+            parts = line.replace('set / acl cpm-filter ', '').split(' ');
             if (parts.length === 0) continue;
-            
-            const filterType = parts[0]; // e.g. ipv4-filter, ipv6-filter
+            filterType = parts[0]; // e.g. ipv4-filter, ipv6-filter
             if (filterType !== 'ipv4-filter' && filterType !== 'ipv6-filter' && filterType !== 'mac-filter') {
-                continue; // Ignoring other things under cpm-filter if any
+                continue;
             }
+            isMatch = true;
+        } else if (version === 'v24' && line.startsWith('set / acl acl-filter cpm type ')) {
+            parts = line.replace('set / acl acl-filter cpm type ', '').split(' ');
+            if (parts.length === 0) continue;
+            let rawType = parts[0]; 
+            if (rawType !== 'ipv4' && rawType !== 'ipv6' && rawType !== 'mac') {
+                continue;
+            }
+            filterType = rawType + '-filter';
+            isMatch = true;
+        }
+
+        if (isMatch) {
             
             if (!result.acl['cpm-filter'][filterType]) {
                 result.acl['cpm-filter'][filterType] = { entry: [] };
@@ -81,7 +97,14 @@ function parseInfoFlat(input) {
                 
                 if (parts.length <= 3) continue;
                 
-                const keyPath = parts.slice(3); // e.g. ["description", "\"To", "drop", "ICMP", "redirect", "packets\""]
+                let keyPath = parts.slice(3); // e.g. ["description", "\"To", "drop", "ICMP", "redirect", "packets\""]
+                
+                if (version === 'v24' && keyPath[0] === 'match' && keyPath.length > 1) {
+                    const family = keyPath[1];
+                    if (family === 'ipv4' || family === 'ipv6' || family === 'transport') {
+                        keyPath.splice(1, 1); // remove the family keyword to align with v23 AST
+                    }
+                }
                 
                 if (keyPath[0] === 'description') {
                     const descStr = line.substring(line.indexOf('description') + 12).trim();

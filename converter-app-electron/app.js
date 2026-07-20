@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const namespaceInput = document.getElementById('namespace-input');
     const peakRateInput = document.getElementById('peak-rate-input');
     const burstSizeInput = document.getElementById('burst-size-input');
+    const versionSelect = document.getElementById('version-select');
 
     function showStatus(msg, isError = false) {
         statusMsg.textContent = msg;
@@ -29,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 1. Parse Input
-            const parsedData = window.parseInput(input);
+            const srlVersion = versionSelect ? versionSelect.value : 'v24';
+            const parsedData = window.parseInput(input, srlVersion);
             
             // 2. Map to EDA CRD structure
             const namespaceValue = namespaceInput ? namespaceInput.value.trim() : 'default';

@@ -42,6 +42,13 @@
                     </summary>
                     <div style="padding: 0 1rem 1rem 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 0.5rem; padding-top: 1rem;">
                         <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label for="version-select" style="font-size: 0.85rem; color: var(--text-muted);">SRLinux Version</label>
+                            <select id="version-select" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 6px; color: #e2e8f0; font-family: var(--font-main); padding: 0.5rem 0.75rem; outline: none; transition: border-color 0.2s ease; width: 150px;">
+                                <option value="v24" style="background: #1e293b;">v24 or newer</option>
+                                <option value="v23" style="background: #1e293b;">v23 or older</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
                             <label for="namespace-input" style="font-size: 0.85rem; color: var(--text-muted);">EDA Namespace</label>
                             <input type="text" id="namespace-input" value="default" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 6px; color: #e2e8f0; font-family: var(--font-main); padding: 0.5rem 0.75rem; outline: none; transition: border-color 0.2s ease; width: 140px;">
                         </div>

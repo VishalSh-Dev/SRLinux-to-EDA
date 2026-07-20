@@ -1,0 +1,14 @@
+# Build artifacts and directories
+converter-app-electron/build/
+converter-app-electron/dist/
+converter-app-electron/*.spec
+__pycache__/
+*.pyc
+
+# IDEs and OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Ignore large binary text examples if desired (uncomment if needed)
+# *.txt

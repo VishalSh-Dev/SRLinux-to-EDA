@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRLinux to EDA Converter</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- js-yaml library for YAML generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+    <style>
+        details.settings-panel summary::-webkit-details-marker {
+            display: none;
+        }
+        details.settings-panel[open] summary .chevron {
+            transform: rotate(180deg) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="glass-panel">
+            <h1>SRLinux to EDA Converter</h1>
+            <p>Paste your SRLinux ACL Info Flat or JSON below to generate EDA ControlPlaneFilter YAML.</p>
+        </header>
+
+        <main class="main-content">
+            <div class="pane input-pane glass-panel">
+                <h2>Input (SRLinux ACL)</h2>
+                <textarea id="input-text" placeholder="Paste 'set / acl cpm-filter ...' or JSON here..."></textarea>
+                <details class="settings-panel" style="background: rgba(0,0,0,0.15); border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--glass-border);">
+                    <summary style="padding: 0.8rem 1rem; font-size: 0.95rem; color: var(--text-main); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; user-select: none; outline: none; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">⚙️ GENERATION SETTINGS (DEFAULTS)</span>
+                        <span class="chevron" style="transition: transform 0.3s ease; font-size: 0.8rem; color: var(--text-muted);">▼</span>
+                    </summary>
+                    <div style="padding: 0 1rem 1rem 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 0.5rem; padding-top: 1rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label for="namespace-input" style="font-size: 0.85rem; color: var(--text-muted);">EDA Namespace</label>
+                            <input type="text" id="namespace-input" value="default" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 6px; color: #e2e8f0; font-family: var(--font-main); padding: 0.5rem 0.75rem; outline: none; transition: border-color 0.2s ease; width: 140px;">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label for="peak-rate-input" style="font-size: 0.85rem; color: var(--text-muted);">System CPU Policer - Peak (Kbps)</label>
+                            <input type="number" id="peak-rate-input" value="1000" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 6px; color: #e2e8f0; font-family: var(--font-main); padding: 0.5rem 0.75rem; outline: none; transition: border-color 0.2s ease; width: 220px;">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label for="burst-size-input" style="font-size: 0.85rem; color: var(--text-muted);">System CPU Policer - Burst (Bytes)</label>
+                            <input type="number" id="burst-size-input" value="10000" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); border-radius: 6px; color: #e2e8f0; font-family: var(--font-main); padding: 0.5rem 0.75rem; outline: none; transition: border-color 0.2s ease; width: 220px;">
+                        </div>
+                    </div>
+                </details>
+
+                <div class="controls" style="align-items: center; justify-content: flex-start; gap: 1rem;">
+                    <button id="convert-btn" class="primary-btn">Convert to EDA YAML</button>
+                    <button id="clear-btn" class="secondary-btn">Clear Input</button>
+                </div>
+            </div>
+
+            <div class="pane output-pane glass-panel">
+                <h2>Output (EDA YAML) <span id="status-msg"></span></h2>
+                <textarea id="output-text" readonly placeholder="Converted YAML will appear here..."></textarea>
+                <div class="controls">
+                    <button id="copy-btn" class="secondary-btn">Copy to Clipboard</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="parser.js"></script>
+    <script src="mapper.js"></script>
+    <script src="generator.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

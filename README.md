@@ -15,7 +15,6 @@ A sleek, native desktop utility to automatically convert SRLinux ACL configurati
 **Modern User Interface:**
 ![Main UI](assets/image1.png)
 
-**Smart Conversions with Detailed Error Checking:**
 ![Validation Error](assets/image2.png)
 
 ## Getting Started
